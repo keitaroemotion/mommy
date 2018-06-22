@@ -41,7 +41,7 @@ def days_interval
 end
 
 def get_log_yesterday(file, author)
-  `cd #{file}; git log --pretty=oneline --author="#{author}" --since=#{days_interval}`
+  `cd #{file}; git log $(git rev-parse --abbrev-ref HEAD) --pretty=oneline --author="#{author}" --since=#{days_interval}`
 end
 
 def appname
