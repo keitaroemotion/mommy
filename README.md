@@ -51,3 +51,8 @@ If directory should be looked for recursively,
 ```
 $ mommy -r
 ```
+
+## about the author
+
+My name is *Kei Sugano*. Please contact me via tobasojyo@gmail.com for any questions.
+
