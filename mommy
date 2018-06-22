@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+
+require 'clipboard'
+require "colorize"
+
+#
+# This script is for collecting the repository you have touched
+# in a day and make a visible report what you did.
+# I made this because it is really tiresome to collect what i did
+# on code and explain it in the daily standup.
+#
+
+def days_interval
+  interval = 1
+  ARGV.each_with_index do |arg, i|
+    if arg == "-d"
+      interval = ARGV[i+1].to_i
+    end
+  end
+  "#{interval}.days"
+end
+
+def get_log_yesterday(file, author)
+  `cd #{file}; git log --pretty=oneline --author="#{author}" --since=#{days_interval}`
+end
+
+def appname
+  "mommy" 
+end
+
+def help?
+  ARGV.include?("-h")
+end
+
+def recursive?
+  ARGV.include?("-r")
+end
+
+def help
+  puts "#{progmom} -h        ... help"
+  puts "#{progmom} -c        ... colored output"
+  puts "#{progmom} -r        ... recursively look for subdirs and see the git repos"
+  puts "#{progmom} -d [x]    ... shows the commits of [x] days before (by default, its one day)"
+end
+
+def color?
+  ARGV.include?("-c")
+end
+
+def files(workdir)
+  Dir[recursive? ? "#{workdir}/*/**/.git" : "#{workdir}/*/.git" ]
+end
+
+def build_easy_line(file, line)
+  chunks = "[#{File.basename(file)}] #{line}".split(" ")
+
+  name_repository  = chunks[0]
+  name_commit_hash = chunks[1][0..7] 
+  name_notes       = chunks[2..-1].join(" ")
+
+  if color?
+    [ name_repository.blue, name_commit_hash.yellow, name_notes ].join(" ")
+  else
+    [ name_repository, name_commit_hash, name_notes ].join(" ")
+  end
+end
+
+#
+# Preset
+#
+workdir = Dir.home
+author  = "Kei Sugano"
+
+logs   = files(workdir)
+            .uniq
+            .map   { |file| file.gsub(".git", "")                                }
+            .map   { |file| [file, get_log_yesterday(file, author).strip.chomp]  }
+            .select{ |file, log| log != ""                                       }
+            .map   { |file, log| log.split("\n").map{ |line| build_easy_line(file, line) }.join("\n") }
+
+puts
+logs.each do |file, log|
+  puts file
+end
+puts
+
+if !color?
+  Clipboard.copy logs.join("\n")
+  puts "[Copied to clipboard]"
+end
