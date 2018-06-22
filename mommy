@@ -3,6 +3,26 @@
 require 'clipboard'
 require "colorize"
 
+def config_file
+  "/usr/local/etc/mommy/config"
+end
+
+def configs
+  key_values = File.read(config_file).split("\n").map do |line|
+    line.split("=")
+  end.flatten
+
+  Hash[*key_values]
+end
+
+def workdir
+  configs["workdir"].gsub("~", Dir.home) || Dir.home
+end
+
+def author
+  configs["author"]
+end
+
 #
 # This script is for collecting the repository you have touched
 # in a day and make a visible report what you did.
@@ -64,12 +84,6 @@ def build_easy_line(file, line)
     [ name_repository, name_commit_hash, name_notes ].join(" ")
   end
 end
-
-#
-# Preset
-#
-workdir = Dir.home
-author  = "Kei Sugano"
 
 logs   = files(workdir)
             .uniq

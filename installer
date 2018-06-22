@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+sudo cp mommy /usr/local/bin
+
+config_dir=/usr/local/etc/mommy
+sudo mkdir -p $config_dir
+sudo cp config $config_dir
