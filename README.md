@@ -29,5 +29,25 @@ $ ./installer
 Finally,
 
 ```
+$ mommy
+```
 
+then you get the expected result.
+
+For the help:
+
+```
+$ mommy -h
+```
+
+If you want colored output,
+
+```
+$ mommy -c
+```
+
+If directory should be looked for recursively, 
+
+```
+$ mommy -r
 ```

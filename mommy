@@ -57,10 +57,11 @@ def recursive?
 end
 
 def help
-  puts "#{progmom} -h        ... help"
-  puts "#{progmom} -c        ... colored output"
-  puts "#{progmom} -r        ... recursively look for subdirs and see the git repos"
-  puts "#{progmom} -d [x]    ... shows the commits of [x] days before (by default, its one day)"
+  puts
+  puts "#{appname} -h        ... help"
+  puts "#{appname} -c        ... colored output"
+  puts "#{appname} -r        ... recursively look for subdirs and see the git repos"
+  puts "#{appname} -d [x]    ... shows the commits of [x] days before (by default, its one day)"
 end
 
 def color?
@@ -83,6 +84,11 @@ def build_easy_line(file, line)
   else
     [ name_repository, name_commit_hash, name_notes ].join(" ")
   end
+end
+
+if help?
+  puts help
+  abort
 end
 
 logs   = files(workdir)
